@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">XkcdComics</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_example">Example action</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string name="application_title">xkcd</string>
+    <string name="application_subtitle">A webcomic of Romance, Sarcasm, Math, and Language.</string>
+    <string name="comic_title">The Sake of Argument with a very long title that we are going</string>
+    <string name="hover_text">Its not actually ... its a DEVICE for EXPLORING a PLAUSIBLE REALITY thats not the one were in, to gain a broader understanding about it. oh, like a boat! ... Just for the sake of argument, we should get a boat! You can invite the Devil, too, if you want.</string>
+    <string name="comic_number_text">Number 1423 | October 27, 2009</string>
+
+
+    <string name="comic_hover_text_title">Hover text: </string>
+    <string name="comic_transcript_text_title">Transcript: </string>
+
+
+    <!--buttons-->
+    <string name="first_button">"|\u003C"</string>
+    <string name="prev_button">\u003C Prev</string>
+    <string name="random_button">Random</string>
+    <string name="next_button">Next \u003E</string>
+    <string name="last_button">\u003E|</string>
+
+
+</resources>
