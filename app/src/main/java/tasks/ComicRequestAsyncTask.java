@@ -5,12 +5,18 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Point;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
@@ -38,19 +44,20 @@ import java.text.DateFormatSymbols;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import fregments.ComicFragment;
 import models.Comic;
+import roxy.xkcdcomics.MainActivity;
 import roxy.xkcdcomics.R;
 
 public class ComicRequestAsyncTask extends AsyncTask<String, Void, String> {
-
-    private static final int COMIC_HEIGHT = 1000;
-    private static final int COMIC_WIDTH = 1000;
 
     private LayoutInflater mLayoutInfrater;
     private Context mContext;
 
     private Comic mComic;
     private View mView;
+    private String mTaskURL;
+    private ProgressDialog mProgressDialog;
 
     public ComicRequestAsyncTask(LayoutInflater layoutInflater, View view,  Context context)
     {
@@ -61,7 +68,8 @@ public class ComicRequestAsyncTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPreExecute(){
-       // showProgressDialog();
+       mProgressDialog = new ProgressDialog(mContext);
+       showProgressDialog();
     }
 
     @Override
@@ -78,6 +86,7 @@ public class ComicRequestAsyncTask extends AsyncTask<String, Void, String> {
                 response.getEntity().writeTo(out);
                 out.close();
                 responseString = out.toString();
+                mTaskURL = uri[0];
             } else{
                 //Closes the connection.
                 response.getEntity().getContent().close();
@@ -89,19 +98,17 @@ public class ComicRequestAsyncTask extends AsyncTask<String, Void, String> {
             //TODO Handle problems..
         }
         return responseString;
-
-
     }
 
     @Override
     protected void onPostExecute(final String result) {
         Gson gson = new Gson();
         mComic = gson.fromJson(result.toString(), Comic.class);
-        Log.d("tag2", "pre comic fragment");
         setUpComicFragment();
+
+        dismissProgressDialog();
+        mView.scrollTo(0,0);
     }
-
-
 
     private void setUpComicFragment(){
         CustomComicHolder  comicHolder;
@@ -136,7 +143,19 @@ public class ComicRequestAsyncTask extends AsyncTask<String, Void, String> {
         String numDate = Integer.toString(comic.getNum()) + " | " + month + " " + Integer.toString(comic.getDay()) + ", " + Integer.toString(comic.getYear());
         comicHolder.comicNumDate.setText(numDate);
 
-        Picasso.with(mContext).load(comic.getImg()).resize(comicHolder.comicImage.getHeight(), comicHolder.comicImage.getWidth()).centerInside().into(comicHolder.comicImage);
+        //Picasso.with(mContext).load(comic.getImg()).resize(comicHolder.comicImage.getWidth(), comicHolder.comicImage.getHeight()).centerInside().into(comicHolder.comicImage);
+        //Point size = getWindowSize();
+        //Picasso.with(mContext).load(comic.getImg()).resize(size.x, size.y).centerInside().into(comicHolder.comicImage);
+        Picasso.with(mContext).load(comic.getImg()).into(comicHolder.comicImage);
+
+        //stores the comic value in the shared resources
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(MainActivity.COMIC_NUMBER_STRING, comic.getNum()).apply();
+
+        if(mTaskURL == ComicFragment.CURRENT_COMIC_URL){
+            editor.putInt(MainActivity.LAST_COMIC_NUMBER_STRING, comic.getNum()).apply();
+        }
     }
 
     private class CustomComicHolder {
@@ -146,4 +165,26 @@ public class ComicRequestAsyncTask extends AsyncTask<String, Void, String> {
         TextView comicTranscriptText;
         ImageView comicImage;
     }
+
+    private Point getWindowSize(){
+        WindowManager windowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        return size;
+    }
+
+    //Loading spinner
+    private void showProgressDialog()
+    {
+        mProgressDialog.setTitle("Loading...");
+        mProgressDialog.setMessage("Retrieving comic");
+        mProgressDialog.show();
+    }
+
+    private void dismissProgressDialog()
+    {
+        mProgressDialog.dismiss();
+    }
+
 }

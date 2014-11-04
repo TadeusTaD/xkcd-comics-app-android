@@ -30,7 +30,7 @@
         android:id="@+id/comic_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scaleType="centerInside"
+        android:scaleType="fitCenter"
         android:adjustViewBounds="true"
         android:layout_below="@+id/comic_title"
         android:paddingTop="20dp"

@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,6 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 
+import java.util.Map;
+import java.util.Set;
+
 import fregments.ComicFragment;
 import fregments.NavigationDrawerFragment;
 
@@ -20,7 +25,12 @@ import fregments.NavigationDrawerFragment;
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
+    public static final String COMIC_NUMBER_STRING = "COMIC_NUMBER";
+    public static final String LAST_COMIC_NUMBER_STRING = "LAST_COMIC_NUMBER";
+    public static final int COMIC_NUMBER_DEFAULT = -1;
+
     private NavigationDrawerFragment mNavigationDrawerFragment;
+
 
     private CharSequence mTitle;
 
@@ -42,7 +52,6 @@ public class MainActivity extends Activity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
-
 
     }
 
